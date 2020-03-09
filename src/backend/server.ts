@@ -82,12 +82,23 @@ app.get('/calendar', (req, res) => {
 
   const events = new Events(undefined, startDate, periodInSeconds);
   const fail = 500;
+  let doubleFound = false;
+
   events
     .getEventsFromGroups(eventGroups)
     .then(json => {
       const firstMonth: any[] = [];
       const secondMonth: any[] = [];
       json.forEach(event => {
+        // eslint-disable-next-line no-magic-numbers
+        if (event.title === 'Hackerspace Hackday' && event.date.getDate() === 27) {
+          if (!doubleFound) {
+            doubleFound = true;
+          } else {
+            return;
+          }
+        }
+
         if (event.date.getMonth() === startMonthNumber) {
           firstMonth.push(event);
         } else {
